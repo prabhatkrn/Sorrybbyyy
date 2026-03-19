@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sincere Apology</title>
+    <title>For My Jaan ❤️</title>
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-red: #8b0000;
             --gold: #d4af37;
             --soft-pink: #ffb3ba;
-            --bg-dark: #0a0a0a;
-        } 
+            --dark-coffee: #2c1610;
+            --period-red: #4a0404;
+            --bg-dark: #050505;
+        }
 
         * {
             margin: 0;
@@ -24,47 +25,61 @@
             font-family: 'Montserrat', sans-serif;
             background-color: var(--bg-dark);
             color: #fff;
-            overflow: hidden;
-            height: 100vh;
+            overflow: hidden; /* Prevents unwanted outer scroll */
             width: 100vw;
+            height: 100vh;
         }
 
-        /* --- Advanced Lock Screen (Glassmorphism) --- */
-        #lock-screen {
-            position: fixed;
+        /* === PAGES SETUP === */
+        .page {
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 1.2s ease-in-out, visibility 1.2s ease-in-out;
+            overflow-y: auto;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        .page.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 10;
+        }
+
+        /* === LOCK SCREEN === */
+        #lock-screen {
             background: radial-gradient(circle at center, #1f1111 0%, #000000 100%);
-            z-index: 1000;
-            transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 1.5s;
+            z-index: 100;
         }
 
         .lock-card {
             background: rgba(25, 25, 25, 0.4);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             padding: 50px 30px;
-            border-radius: 15px;
+            border-radius: 20px;
             border: 1px solid rgba(212, 175, 55, 0.2);
             text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(212, 175, 55, 0.05);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
             width: 90%;
             max-width: 360px;
-            transition: all 0.3s ease;
         }
 
         .lock-card h2 {
             font-family: 'Great Vibes', cursive;
-            font-size: 2.8rem;
+            font-size: 3rem;
             color: var(--gold);
             margin-bottom: 25px;
-            text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
         }
 
         input[type="password"] {
@@ -72,15 +87,14 @@
             padding: 15px;
             margin-bottom: 25px;
             border: none;
-            border-bottom: 2px solid rgba(212, 175, 55, 0.5);
+            border-bottom: 2px solid rgba(212, 175, 55, 0.3);
             background: transparent;
             color: white;
             font-size: 28px;
             text-align: center;
-            letter-spacing: 12px;
+            letter-spacing: 15px;
             outline: none;
-            transition: border-color 0.3s;
-            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s ease;
         }
 
         input[type="password"]:focus {
@@ -88,93 +102,190 @@
         }
 
         .unlock-btn {
-            background: linear-gradient(45deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            background: transparent;
             color: var(--gold);
             border: 1px solid var(--gold);
-            padding: 14px 45px;
+            padding: 15px 50px;
             font-size: 14px;
-            font-weight: 500;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 3px;
             border-radius: 30px;
             cursor: pointer;
             transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
         }
 
-        .unlock-btn:hover, .unlock-btn:active {
+        .unlock-btn:hover {
             background: var(--gold);
             color: black;
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
-        }
-
-        /* --- Error Shake Animation --- */
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            20%, 60% { transform: translateX(-10px); }
-            40%, 80% { transform: translateX(10px); }
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.6);
         }
 
         .shake-error {
-            animation: shake 0.5s ease-in-out;
-            border-color: #ff4d5a !important;
-            box-shadow: 0 0 20px rgba(255, 77, 90, 0.3) !important;
+            animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+            border: 1px solid #ff4d5a !important;
+            box-shadow: 0 0 20px rgba(255, 77, 90, 0.4) !important;
         }
 
-        /* --- Main Content --- */
-        #main-content {
-            display: none;
-            opacity: 0;
-            height: 100vh;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 50px 20px;
-            background: radial-gradient(circle at top, #1a0b0b 0%, #000000 100%);
-            overflow-y: auto;
-            transition: opacity 2s ease;
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-2px, 0, 0); }
+            20%, 80% { transform: translate3d(4px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-8px, 0, 0); }
+            40%, 60% { transform: translate3d(8px, 0, 0); }
         }
 
-        .header-section {
+        /* === PAGE 1: PERIOD CARE === */
+        #page-1 {
+            background: linear-gradient(to bottom, var(--dark-coffee), var(--period-red), #000);
+            padding: 20px;
+        }
+
+        /* Floating emojis background */
+        .floating-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .float-item {
+            position: absolute;
+            font-size: 35px;
+            opacity: 0.6;
+            animation: floatUp 15s linear infinite;
+            filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) rotate(0deg) scale(0.8); opacity: 0; }
+            10% { opacity: 0.7; }
+            90% { opacity: 0.7; }
+            100% { transform: translateY(-10vh) rotate(360deg) scale(1.2); opacity: 0; }
+        }
+
+        .care-box {
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            padding: 40px 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 179, 186, 0.2);
             text-align: center;
+            max-width: 500px;
+            width: 95%;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.8);
+            animation: pulseGlow 4s infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 20px rgba(255, 179, 186, 0.1); }
+            100% { box-shadow: 0 0 40px rgba(255, 179, 186, 0.3); }
+        }
+
+        .care-box h1 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.5rem;
+            color: var(--soft-pink);
             margin-bottom: 20px;
         }
 
-        .bouquet-icon {
-            font-size: 80px;
-            margin-bottom: 15px;
-            display: inline-block;
-            animation: floating 4s ease-in-out infinite;
-            filter: drop-shadow(0 0 15px rgba(255, 179, 186, 0.4));
+        .care-box p {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #fce4ec;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+
+        .continue-btn {
+            background: linear-gradient(45deg, #ff4b2b, #ff416c);
+            border: none;
+            color: white;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(255, 65, 108, 0.4);
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: heartbeat 2s infinite;
+        }
+
+        .continue-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(255, 65, 108, 0.6);
+        }
+
+        @keyframes heartbeat {
+            0% { transform: scale(1); }
+            15% { transform: scale(1.05); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.05); }
+            60%, 100% { transform: scale(1); }
+        }
+
+
+        /* === PAGE 2: MAIN APOLOGY === */
+        #page-2 {
+            background: radial-gradient(circle at top, #1a0b0b 0%, #000000 100%);
+            justify-content: flex-start;
+            padding: 50px 20px;
+        }
+
+        /* Fixed GPU-accelerated Petals (NO LAG) */
+        #petal-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .gpu-petal {
+            position: absolute;
+            top: -10%;
+            font-size: 20px;
+            animation: fallGPU linear infinite;
+            will-change: transform, opacity; /* Hardware acceleration */
+        }
+
+        @keyframes fallGPU {
+            0% { transform: translate3d(0, -10vh, 0) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translate3d(var(--drift), 110vh, 0) rotate(360deg); opacity: 0; }
+        }
+
+        .apology-header {
+            text-align: center;
+            margin-bottom: 30px;
+            z-index: 2;
         }
 
         .main-title {
             font-family: 'Great Vibes', cursive;
-            font-size: 4.5rem;
+            font-size: 4rem;
             color: var(--soft-pink);
-            text-shadow: 2px 2px 15px rgba(255, 179, 186, 0.4);
-            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(255, 179, 186, 0.3);
         }
 
-        /* --- Message Box --- */
         .message-box {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(5px);
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
             width: 100%;
             max-width: 650px;
             padding: 35px;
-            border-radius: 12px;
+            border-radius: 15px;
             border-left: 3px solid var(--gold);
-            box-shadow: 10px 10px 40px rgba(0,0,0,0.6);
-            margin-bottom: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            z-index: 2;
+            margin-bottom: 50px;
         }
 
         .hindi-message {
             font-size: 1.15rem;
-            line-height: 2;
-            color: #f0f0f0;
-            text-align: left;
+            line-height: 2.2;
+            color: #eaeaea;
             white-space: pre-wrap;
             letter-spacing: 0.5px;
         }
@@ -188,107 +299,54 @@
             animation: blink 1s step-end infinite;
         }
 
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-        /* --- Special Period Care --- */
-        .period-care-card {
-            width: 100%;
-            max-width: 650px;
-            padding: 25px;
-            background: linear-gradient(135deg, rgba(139, 0, 0, 0.15) 0%, rgba(255, 179, 186, 0.05) 100%);
-            border-radius: 10px;
-            border: 1px dashed rgba(255, 179, 186, 0.3);
-            font-style: italic;
-            color: var(--soft-pink);
-            font-size: 0.95rem;
-            line-height: 1.6;
-            text-align: center;
-            opacity: 0;
-            animation: fadeIn 2s forwards 8s, heartbeat 3s infinite 10s;
-        }
-
-        /* --- Realistic Petals --- */
-        .petal {
-            position: fixed;
-            top: -10%;
-            z-index: 100;
-            pointer-events: none;
-            /* Drift is handled via CSS variables set in JS */
-            animation: fall linear infinite;
-        }
-
-        @keyframes fall {
-            0% { 
-                transform: translate(0, -10vh) rotate(0deg); 
-                opacity: 0; 
-            }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { 
-                transform: translate(var(--drift), 110vh) rotate(360deg); 
-                opacity: 0; 
-            }
-        }
-
-        @keyframes floating {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(5deg); }
-        }
-
-        @keyframes fadeIn {
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-        }
-
-        /* Mobile Scale */
         @media (max-width: 600px) {
+            .lock-card h2 { font-size: 2.5rem; }
+            .care-box h1 { font-size: 2.8rem; }
             .main-title { font-size: 3.2rem; }
             .hindi-message { font-size: 1.05rem; }
-            .lock-card { padding: 40px 20px; }
             .message-box { padding: 25px 20px; }
         }
     </style>
 </head>
 <body>
 
-    <div id="audio-placeholder"></div>
+    <div id="audio-placeholder" style="display:none;"></div>
 
-    <div id="lock-screen">
+    <div id="lock-screen" class="page active">
         <div class="lock-card" id="lock-box">
-            <h2>Private Message</h2>
+            <h2>Only For You</h2>
             <input type="password" id="passInput" placeholder="PIN" maxlength="6" inputmode="numeric" pattern="[0-9]*">
             <button class="unlock-btn" onclick="validate()">Unlock</button>
             <p id="err" style="color: #ff4d5a; margin-top: 15px; font-size: 13px; opacity: 0; transition: opacity 0.3s;"></p>
         </div>
     </div>
 
-    <div id="main-content">
-        <div class="header-section">
-            <span class="bouquet-icon">💐</span>
+    <div id="page-1" class="page">
+        <div class="floating-bg" id="floating-bg"></div>
+        <div class="care-box">
+            <h1>My Jaan...</h1>
+            <p>I know you are going through pain right now. <br><br> Take this virtual warm coffee ☕, dark chocolates 🍫, and a tight hug 🧸 from me. <br><br> Please rest well, let me take away all your stress today. I am always here to take care of you.</p>
+            <button class="continue-btn" onclick="goToPage2()">Read My Heart ➔</button>
+        </div>
+    </div>
+
+    <div id="page-2" class="page">
+        <div id="petal-container"></div>
+        <div class="apology-header">
             <h1 class="main-title">Please Forgive Me</h1>
         </div>
-
         <div class="message-box">
             <div class="hindi-message"><span id="text-target"></span><span class="cursor" id="cursor"></span></div>
-        </div>
-
-        <div class="period-care-card">
-            "I know you are going through pain right now. Please let me take care of you. Here is a virtual warm hug, some chocolates, and all my love. Rest well, my Jaan."
         </div>
     </div>
 
     <script>
         const PIN = "140507";
-        const msg = "मेरी वजह से आपके चेहरे की स्माइल गायब हो गई, वो आपका रोना जो मुझे बिल्कुल अच्छा नहीं लग रहा। \n\nप्लीज़ अपना गुस्सा थूक दीजिए मैं आपके बिना बहुत अधूरा हूँ। \nक्या आप मेरी माफ़ी एक्सेप्ट करोगी? नहीं भी माफ करेंगी तो कोई बात नहीं मेरी चाह नहीं था वो गुस्सा आपने देखा ये प्यार भी देखिए चाहे जो हो मैंने जो किया बहुत गलत किया क्योंकि मेरा दर्द की दवा आप हो सो नहीं पाता खा नहीं पाता पढ़ नहीं पाता कुछ करने के लायक नहीं रहता । \n\nजब ये लड़ाई होती दिल से बोलूं तो मैं क्या ये सब चाह के करता कि आपको दर्द दे सकूं नहीं बिल्कुल नहीं पर मैं कोई बचाव नहीं करूंगा। आप भले ही माफ करो या न करो मैं मनाऊंगा चाहे जो हो अगर नियति के विरुद्ध भी जाना परे तो सोचूंगा नहीं। बस मेरी जान अब उठ जाइए । शुभ प्रभात 🌞";
+        const hindiMsg = "मेरी वजह से आपके चेहरे की स्माइल गायब हो गई, वो आपका रोना जो मुझे बिल्कुल अच्छा नहीं लग रहा। \n\nप्लीज़ अपना गुस्सा थूक दीजिए मैं आपके बिना बहुत अधूरा हूँ। \nक्या आप मेरी माफ़ी एक्सेप्ट करोगी? नहीं भी माफ करेंगी तो कोई बात नहीं मेरी चाह नहीं था वो गुस्सा आपने देखा ये प्यार भी देखिए चाहे जो हो मैंने जो किया बहुत गलत किया क्योंकि मेरा दर्द की दवा आप हो सो नहीं पाता खा नहीं पाता पढ़ नहीं पाता कुछ करने के लायक नहीं रहता । \n\nजब ये लड़ाई होती दिल से बोलूं तो मैं क्या ये सब चाह के करता कि आपको दर्द दे सकूं नहीं बिल्कुल नहीं पर मैं कोई बचाव नहीं करूंगा। आप भले ही माफ करो या न करो मैं मनाऊंगा चाहे जो हो अगर नियति के विरुद्ध भी जाना परे तो सोचूंगा नहीं। बस मेरी जान अब उठ जाइए । शुभ प्रभात 🌞";
 
-        // Listen for "Enter" key press on mobile keyboard
+        // Handle Enter Key
         document.getElementById("passInput").addEventListener("keypress", function(event) {
             if (event.key === "Enter") {
                 event.preventDefault();
@@ -303,96 +361,111 @@
             const lockBox = document.getElementById('lock-box');
 
             if(val === PIN) {
-                // Success
                 inputElement.blur(); // Hide keyboard
-                errText.style.opacity = '0';
-                const ls = document.getElementById('lock-screen');
-                ls.style.opacity = '0';
                 
+                // Play Music (Pure Instrumental Piano)
+                document.getElementById('audio-placeholder').innerHTML = `<iframe width="1" height="1" src="https://www.youtube.com/embed/Q8Tiz6INF7I?autoplay=1&loop=1&playlist=Q8Tiz6INF7I" frameborder="0" allow="autoplay; encrypted-media"></iframe>`;
+                
+                // Transition to Page 1
+                document.getElementById('lock-screen').classList.remove('active');
                 setTimeout(() => {
-                    ls.style.display = 'none';
-                    const mc = document.getElementById('main-content');
-                    mc.style.display = 'flex';
-                    setTimeout(() => mc.style.opacity = '1', 100);
-                    
-                    startEverything();
-                }, 1500);
+                    document.getElementById('page-1').classList.add('active');
+                    startFloatingElements();
+                }, 1000);
+
             } else {
-                // Error with shake animation
+                // Error Shake
                 errText.innerText = "Incorrect PIN. Try again.";
                 errText.style.opacity = '1';
                 inputElement.value = "";
-                
-                // Trigger shake
                 lockBox.classList.remove('shake-error');
                 void lockBox.offsetWidth; // Trigger reflow
                 lockBox.classList.add('shake-error');
-                
-                // Remove shake class after animation ends
-                setTimeout(() => {
-                    lockBox.classList.remove('shake-error');
-                }, 500);
             }
         }
 
-        function startEverything() {
-            // Embed YouTube Music - Triggered after user interaction so Autoplay works
-            document.getElementById('audio-placeholder').innerHTML = `<iframe width="0" height="0" src="https://www.youtube.com/embed/6EEW-9NDM5k?autoplay=1&loop=1&playlist=6EEW-9NDM5k" frameborder="0" allow="autoplay; encrypted-media"></iframe>`;
-            
-            // Start Petals
-            setInterval(createPetal, 400); // Slightly adjusted for better performance
-            
-            // Start Typing Effect
-            setTimeout(type, 1000); // Small delay before typing starts
+        function goToPage2() {
+            document.getElementById('page-1').classList.remove('active');
+            setTimeout(() => {
+                document.getElementById('page-2').classList.add('active');
+                startGPUFallingPetals();
+                setTimeout(startTyping, 800);
+            }, 1000);
         }
 
+        // --- LAG-FREE FLOATING ELEMENTS (Page 1) ---
+        function startFloatingElements() {
+            const bg = document.getElementById('floating-bg');
+            if(bg.children.length > 0) return; // Prevent creating multiple times
+            const items = ['🍫', '☕', '🧸', '🌹', '❤️'];
+            
+            // Create exactly 15 elements once
+            for(let i=0; i<15; i++) {
+                let el = document.createElement('div');
+                el.className = 'float-item';
+                el.innerText = items[Math.floor(Math.random() * items.length)];
+                el.style.left = (Math.random() * 90) + 'vw';
+                el.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                el.style.animationDelay = (Math.random() * 5) + 's';
+                el.style.fontSize = (Math.random() * 20 + 25) + 'px';
+                bg.appendChild(el);
+            }
+        }
+
+        // --- LAG-FREE PETALS (Page 2) ---
+        function startGPUFallingPetals() {
+            const container = document.getElementById('petal-container');
+            if(container.children.length > 0) return; // Only create once
+            
+            const types = ['🌹', '❤️', '✨', '💖'];
+            const totalPetals = window.innerWidth < 600 ? 20 : 35; // Less on mobile for performance
+            
+            for(let i=0; i<totalPetals; i++) {
+                let p = document.createElement('div');
+                p.className = 'gpu-petal';
+                p.innerText = types[Math.floor(Math.random() * types.length)];
+                
+                // Randomize positions & timing
+                p.style.left = (Math.random() * 100) + 'vw';
+                p.style.animationDuration = (Math.random() * 5 + 4) + 's';
+                p.style.animationDelay = (Math.random() * 5) + 's';
+                p.style.fontSize = (Math.random() * 12 + 15) + 'px';
+                
+                // CSS variable for drift
+                const drift = (Math.random() * 200 - 100) + 'px';
+                p.style.setProperty('--drift', drift);
+                
+                container.appendChild(p);
+            }
+        }
+
+        // --- OPTIMIZED TYPING EFFECT ---
         let charIndex = 0;
-        function type() {
-            if (charIndex < msg.length) {
-                document.getElementById('text-target').innerHTML += msg.charAt(charIndex);
+        let textTarget = document.getElementById('text-target');
+        
+        function startTyping() {
+            if (charIndex < hindiMsg.length) {
+                // Using textContent is much faster than innerHTML and prevents reflow lag
+                textTarget.textContent += hindiMsg.charAt(charIndex);
                 charIndex++;
                 
-                // Scroll to bottom of message box automatically as it types
-                const mainContent = document.getElementById('main-content');
-                mainContent.scrollTop = mainContent.scrollHeight;
+                // Only scroll down periodically to prevent Layout Thrashing (Lag)
+                if (charIndex % 10 === 0) {
+                    const page2 = document.getElementById('page-2');
+                    if(page2.scrollHeight - page2.scrollTop > page2.clientHeight) {
+                        page2.scrollTop = page2.scrollHeight;
+                    }
+                }
 
-                // Adjust speed - slightly random for human feel
-                let typeSpeed = Math.random() * 40 + 40; 
-                if (msg.charAt(charIndex - 1) === '\n') typeSpeed = 400; // Pause at paragraphs
+                let speed = Math.random() * 30 + 40;
+                if (hindiMsg.charAt(charIndex - 1) === '\n') speed = 400; // Pause at paragraphs
                 
-                setTimeout(type, typeSpeed);
+                setTimeout(startTyping, speed);
             } else {
-                // Hide cursor when done
                 document.getElementById('cursor').style.display = 'none';
             }
-        }
-
-        function createPetal() {
-            const p = document.createElement('div');
-            p.className = 'petal';
-            
-            // Added glowing stars and different hearts for richer visual
-            const types = ['🌹', '❤️', '✨', '💖', '🌸'];
-            p.innerText = types[Math.floor(Math.random() * types.length)];
-            
-            // Random horizontal starting position
-            p.style.left = Math.random() * 100 + 'vw';
-            
-            // Random size
-            p.style.fontSize = Math.random() * 15 + 15 + 'px';
-            
-            // Random fall duration
-            p.style.animationDuration = Math.random() * 4 + 4 + 's';
-            
-            // Calculate horizontal drift (-150px to +150px)
-            const drift = (Math.random() * 300 - 150) + 'px';
-            p.style.setProperty('--drift', drift);
-            
-            document.body.appendChild(p);
-            
-            // Clean up DOM to prevent lag
-            setTimeout(() => p.remove(), 8000);
         }
     </script>
 </body>
 </html>
+
