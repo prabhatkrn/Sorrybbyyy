@@ -2,28 +2,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For You 💌</title>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sincere Apology</title>
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary-red: #8b0000;
+            --gold: #d4af37;
+            --soft-pink: #ffb3ba;
+            --bg-dark: #0a0a0a;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #0a0a0a;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-dark);
             color: #fff;
             overflow: hidden;
             height: 100vh;
             width: 100vw;
         }
 
-        /* --- Lock Screen --- */
+        /* --- Advanced Lock Screen (Glassmorphism) --- */
         #lock-screen {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
@@ -32,266 +40,359 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, #1a0000 0%, #000000 100%);
-            z-index: 100;
-            transition: opacity 1s ease;
+            background: radial-gradient(circle at center, #1f1111 0%, #000000 100%);
+            z-index: 1000;
+            transition: opacity 1.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 1.5s;
         }
 
-        .lock-box {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 40px;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .lock-card {
+            background: rgba(25, 25, 25, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 50px 30px;
+            border-radius: 15px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
             text-align: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(212, 175, 55, 0.05);
+            width: 90%;
+            max-width: 360px;
+            transition: all 0.3s ease;
         }
 
-        .lock-icon {
-            font-size: 50px;
-            margin-bottom: 20px;
-            animation: pulse 2s infinite;
+        .lock-card h2 {
+            font-family: 'Great Vibes', cursive;
+            font-size: 2.8rem;
+            color: var(--gold);
+            margin-bottom: 25px;
+            text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
         }
 
         input[type="password"] {
             width: 100%;
             padding: 15px;
-            margin: 10px 0 20px 0;
+            margin-bottom: 25px;
             border: none;
-            border-radius: 10px;
-            background: rgba(255,255,255,0.1);
+            border-bottom: 2px solid rgba(212, 175, 55, 0.5);
+            background: transparent;
             color: white;
-            font-size: 18px;
+            font-size: 28px;
             text-align: center;
-            letter-spacing: 5px;
+            letter-spacing: 12px;
             outline: none;
+            transition: border-color 0.3s;
+            font-family: 'Montserrat', sans-serif;
         }
 
-        button {
-            background: #e63946;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 16px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background 0.3s;
+        input[type="password"]:focus {
+            border-bottom: 2px solid var(--gold);
         }
 
-        button:hover {
-            background: #ff4d5a;
-        }
-
-        #error-msg {
-            color: #ff4d5a;
+        .unlock-btn {
+            background: linear-gradient(45deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+            color: var(--gold);
+            border: 1px solid var(--gold);
+            padding: 14px 45px;
             font-size: 14px;
-            margin-top: 10px;
-            min-height: 20px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .unlock-btn:hover, .unlock-btn:active {
+            background: var(--gold);
+            color: black;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+        }
+
+        /* --- Error Shake Animation --- */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+
+        .shake-error {
+            animation: shake 0.5s ease-in-out;
+            border-color: #ff4d5a !important;
+            box-shadow: 0 0 20px rgba(255, 77, 90, 0.3) !important;
         }
 
         /* --- Main Content --- */
         #main-content {
             display: none;
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            opacity: 0;
+            height: 100vh;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            background: radial-gradient(circle, #2b0000 0%, #000000 100%);
-            padding: 20px;
-            text-align: center;
+            justify-content: flex-start;
+            padding: 50px 20px;
+            background: radial-gradient(circle at top, #1a0b0b 0%, #000000 100%);
             overflow-y: auto;
+            transition: opacity 2s ease;
         }
 
-        .bouquet {
-            font-size: 80px;
-            margin-bottom: 10px;
-            animation: float 3s ease-in-out infinite;
-            text-shadow: 0 0 20px rgba(230, 57, 70, 0.5);
-        }
-
-        .title {
-            font-family: 'Dancing Script', cursive;
-            font-size: 3.5rem;
-            color: #ffb3ba;
+        .header-section {
+            text-align: center;
             margin-bottom: 20px;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 2s forwards 0.5s;
         }
 
-        .typing-container {
-            font-size: 1.1rem;
-            line-height: 1.6;
-            max-width: 600px;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 25px;
-            border-radius: 15px;
-            border: 1px solid rgba(255,179,186,0.2);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        .bouquet-icon {
+            font-size: 80px;
+            margin-bottom: 15px;
+            display: inline-block;
+            animation: floating 4s ease-in-out infinite;
+            filter: drop-shadow(0 0 15px rgba(255, 179, 186, 0.4));
         }
 
-        .typing-text {
-            border-right: 2px solid #ffb3ba;
+        .main-title {
+            font-family: 'Great Vibes', cursive;
+            font-size: 4.5rem;
+            color: var(--soft-pink);
+            text-shadow: 2px 2px 15px rgba(255, 179, 186, 0.4);
+            margin-bottom: 10px;
+        }
+
+        /* --- Message Box --- */
+        .message-box {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(5px);
+            width: 100%;
+            max-width: 650px;
+            padding: 35px;
+            border-radius: 12px;
+            border-left: 3px solid var(--gold);
+            box-shadow: 10px 10px 40px rgba(0,0,0,0.6);
+            margin-bottom: 30px;
+        }
+
+        .hindi-message {
+            font-size: 1.15rem;
+            line-height: 2;
+            color: #f0f0f0;
+            text-align: left;
             white-space: pre-wrap;
-            overflow: hidden;
+            letter-spacing: 0.5px;
         }
 
-        .period-care {
-            margin-top: 25px;
-            font-size: 1rem;
-            color: #ffdfd3;
-            background: rgba(230, 57, 70, 0.1);
-            padding: 15px;
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.15rem;
+            background-color: var(--gold);
+            vertical-align: text-bottom;
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* --- Special Period Care --- */
+        .period-care-card {
+            width: 100%;
+            max-width: 650px;
+            padding: 25px;
+            background: linear-gradient(135deg, rgba(139, 0, 0, 0.15) 0%, rgba(255, 179, 186, 0.05) 100%);
             border-radius: 10px;
-            border-left: 4px solid #e63946;
+            border: 1px dashed rgba(255, 179, 186, 0.3);
+            font-style: italic;
+            color: var(--soft-pink);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            text-align: center;
             opacity: 0;
-            animation: fadeIn 2s forwards 4s;
+            animation: fadeIn 2s forwards 8s, heartbeat 3s infinite 10s;
         }
 
-        /* --- Falling Roses Animation --- */
+        /* --- Realistic Petals --- */
         .petal {
-            position: absolute;
+            position: fixed;
             top: -10%;
-            z-index: 10;
-            user-select: none;
+            z-index: 100;
             pointer-events: none;
+            /* Drift is handled via CSS variables set in JS */
             animation: fall linear infinite;
         }
 
         @keyframes fall {
-            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+            0% { 
+                transform: translate(0, -10vh) rotate(0deg); 
+                opacity: 0; 
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { 
+                transform: translate(var(--drift), 110vh) rotate(360deg); 
+                opacity: 0; 
+            }
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0px); }
-        }
-
-        @keyframes fadeInUp {
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes floating {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
         }
 
         @keyframes fadeIn {
-            to { opacity: 1; }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Mobile Adjustments */
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        /* Mobile Scale */
         @media (max-width: 600px) {
-            .title { font-size: 2.8rem; }
-            .bouquet { font-size: 60px; }
-            .typing-container { padding: 15px; font-size: 1rem; }
+            .main-title { font-size: 3.2rem; }
+            .hindi-message { font-size: 1.05rem; }
+            .lock-card { padding: 40px 20px; }
+            .message-box { padding: 25px 20px; }
         }
     </style>
 </head>
 <body>
 
-    <div id="audio-container"></div>
+    <div id="audio-placeholder"></div>
 
     <div id="lock-screen">
-        <div class="lock-box">
-            <div class="lock-icon">🔒</div>
-            <input type="password" id="password-input" placeholder="******" maxlength="6">
-            <button onclick="checkPassword()">Unlock</button>
-            <div id="error-msg"></div>
+        <div class="lock-card" id="lock-box">
+            <h2>Private Message</h2>
+            <input type="password" id="passInput" placeholder="PIN" maxlength="6" inputmode="numeric" pattern="[0-9]*">
+            <button class="unlock-btn" onclick="validate()">Unlock</button>
+            <p id="err" style="color: #ff4d5a; margin-top: 15px; font-size: 13px; opacity: 0; transition: opacity 0.3s;"></p>
         </div>
     </div>
 
     <div id="main-content">
-        <div class="bouquet">💐🧸🍫</div>
-        <h1 class="title">I Am So Sorry...</h1>
-        
-        <div class="typing-container">
-            <div id="typing-element" class="typing-text"></div>
+        <div class="header-section">
+            <span class="bouquet-icon">💐</span>
+            <h1 class="main-title">Please Forgive Me</h1>
         </div>
 
-        <div class="period-care">
-            "मुझे पता है कि आपके पीरियड्स चल रहे हैं और आपको दर्द हो रहा होगा। ऐसे में मेरी बेवकूफियों से आपको और हर्ट करना मेरी सबसे बड़ी गलती थी। <br><br>
-            ये लिजिए वर्चुअल हॉट चॉकलेट ☕, बहुत सारी चॉकलेट्स 🍫, और एक टाइट हग 🤗। प्लीज मुझे माफ़ कर दीजिए मुझे पता है मैं इसके काबिल भी नहीं पर मेरी ऐसी कोई चाह नहीं रहती मेरी जान। I promise आगे से ऐसा नहीं होगा।"
+        <div class="message-box">
+            <div class="hindi-message"><span id="text-target"></span><span class="cursor" id="cursor"></span></div>
+        </div>
+
+        <div class="period-care-card">
+            "I know you are going through pain right now. Please let me take care of you. Here is a virtual warm hug, some chocolates, and all my love. Rest well, my Jaan."
         </div>
     </div>
 
     <script>
-        const correctPin = "140507";
-        const message = "मुझे पता है मैंने आपको बहुत हर्ट किया है और मैं सच में अपने किए पर शर्मिंदा हूँ।
-          मेरी वजह से आपके चेहरे की स्माइल गायब हो गई,वो आपका रोना जो मुझे बिल्कुल अच्छा नहीं लग रहा। \n\nप्लीज़ अपना गुस्सा थूक दीजिए मैं आपके बिना बहुत अधूरा हूँ।
-          क्या आप मेरी माफ़ी एक्सेप्ट करोगी?नहीं भी माफ करेंगी तो कोई बात नहीं मेरी चाह नहीं था वो गुस्सा आपने देखा ये प्यार भी देखिए चाहे जो हो मैंने जो किया बहुत गलत किया क्योंकि मेरा दर्द की दवा आप हो सो नहीं पाता खा नहीं पाता पढ़ नहीं पाता कुछ करने के लायक नहीं रहता ।
-            जब ये लड़ाई होती दिल से बोलूं तो मैं क्या ये सब चाह के करता कि आपको दर्द दे सकूं नहीं बिल्कुल नहीं पर मैं कोई बचाव नहीं करूंगा। आप भले ही माफ करो या न करो मैं मनाऊंगा चाहे जो हो अगर नियति के विरुद्ध भी जाना परे तो सोचूंगा नहीं। बस मेरी जान अब उठ जाइए । शुभ प्रभात 🌞";
-        
-        function checkPassword() {
-            const input = document.getElementById('password-input').value;
-            const errorMsg = document.getElementById('error-msg');
-            
-            if(input === correctPin) {
-                // Unlock Animation
-                document.getElementById('lock-screen').style.opacity = '0';
-                setTimeout(() => {
-                    document.getElementById('lock-screen').style.display = 'none';
-                    document.getElementById('main-content').style.display = 'flex';
-                    
-                    // Start Music, Petals, and Typing
-                    playMusic();
-                    createPetals();
-                    typeWriter();
-                }, 1000);
-            } else {
-                errorMsg.innerText = "Wrong Password!";
-                setTimeout(() => errorMsg.innerText = "", 2000);
+        const PIN = "140507";
+        const msg = "मेरी वजह से आपके चेहरे की स्माइल गायब हो गई, वो आपका रोना जो मुझे बिल्कुल अच्छा नहीं लग रहा। \n\nप्लीज़ अपना गुस्सा थूक दीजिए मैं आपके बिना बहुत अधूरा हूँ। \nक्या आप मेरी माफ़ी एक्सेप्ट करोगी? नहीं भी माफ करेंगी तो कोई बात नहीं मेरी चाह नहीं था वो गुस्सा आपने देखा ये प्यार भी देखिए चाहे जो हो मैंने जो किया बहुत गलत किया क्योंकि मेरा दर्द की दवा आप हो सो नहीं पाता खा नहीं पाता पढ़ नहीं पाता कुछ करने के लायक नहीं रहता । \n\nजब ये लड़ाई होती दिल से बोलूं तो मैं क्या ये सब चाह के करता कि आपको दर्द दे सकूं नहीं बिल्कुल नहीं पर मैं कोई बचाव नहीं करूंगा। आप भले ही माफ करो या न करो मैं मनाऊंगा चाहे जो हो अगर नियति के विरुद्ध भी जाना परे तो सोचूंगा नहीं। बस मेरी जान अब उठ जाइए । शुभ प्रभात 🌞";
+
+        // Listen for "Enter" key press on mobile keyboard
+        document.getElementById("passInput").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                validate();
             }
-        }
+        });
 
-        // Play Akon Lonely via YouTube API (Autoplay allowed on user interaction)
-        function playMusic() {
-            const container = document.getElementById('audio-container');
-            // Using a hidden iframe to auto-play the song after the user clicks 'Unlock'
-            container.innerHTML = `<iframe width="0" height="0" src="https://www.youtube.com/embed/6EEW-9NDM5k?autoplay=1&loop=1&playlist=6EEW-9NDM5k" frameborder="0" allow="autoplay" allowfullscreen></iframe>`;
-        }
+        function validate() {
+            const inputElement = document.getElementById('passInput');
+            const val = inputElement.value;
+            const errText = document.getElementById('err');
+            const lockBox = document.getElementById('lock-box');
 
-        // Typing Animation Logic
-        let i = 0;
-        function typeWriter() {
-            const element = document.getElementById('typing-element');
-            if (i < message.length) {
-                element.innerHTML += message.charAt(i);
-                i++;
-                setTimeout(typeWriter, 50); // Speed of typing
-            } else {
-                element.style.borderRight = "none"; // Remove cursor when done
-            }
-        }
-
-        // Falling Roses Animation
-        function createPetals() {
-            const emojis = ['🌹', '🥀', '✨', '❤️'];
-            setInterval(() => {
-                const petal = document.createElement('div');
-                petal.classList.add('petal');
-                petal.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-                petal.style.left = Math.random() * 100 + 'vw';
-                petal.style.fontSize = (Math.random() * 20 + 15) + 'px';
-                petal.style.animationDuration = (Math.random() * 3 + 2) + 's'; // 2 to 5 seconds
+            if(val === PIN) {
+                // Success
+                inputElement.blur(); // Hide keyboard
+                errText.style.opacity = '0';
+                const ls = document.getElementById('lock-screen');
+                ls.style.opacity = '0';
                 
-                document.body.appendChild(petal);
-
-                // Remove petal after animation ends to prevent lag
                 setTimeout(() => {
-                    petal.remove();
-                }, 5000);
-            }, 300); // New petal every 300ms
+                    ls.style.display = 'none';
+                    const mc = document.getElementById('main-content');
+                    mc.style.display = 'flex';
+                    setTimeout(() => mc.style.opacity = '1', 100);
+                    
+                    startEverything();
+                }, 1500);
+            } else {
+                // Error with shake animation
+                errText.innerText = "Incorrect PIN. Try again.";
+                errText.style.opacity = '1';
+                inputElement.value = "";
+                
+                // Trigger shake
+                lockBox.classList.remove('shake-error');
+                void lockBox.offsetWidth; // Trigger reflow
+                lockBox.classList.add('shake-error');
+                
+                // Remove shake class after animation ends
+                setTimeout(() => {
+                    lockBox.classList.remove('shake-error');
+                }, 500);
+            }
+        }
+
+        function startEverything() {
+            // Embed YouTube Music - Triggered after user interaction so Autoplay works
+            document.getElementById('audio-placeholder').innerHTML = `<iframe width="0" height="0" src="https://www.youtube.com/embed/6EEW-9NDM5k?autoplay=1&loop=1&playlist=6EEW-9NDM5k" frameborder="0" allow="autoplay; encrypted-media"></iframe>`;
+            
+            // Start Petals
+            setInterval(createPetal, 400); // Slightly adjusted for better performance
+            
+            // Start Typing Effect
+            setTimeout(type, 1000); // Small delay before typing starts
+        }
+
+        let charIndex = 0;
+        function type() {
+            if (charIndex < msg.length) {
+                document.getElementById('text-target').innerHTML += msg.charAt(charIndex);
+                charIndex++;
+                
+                // Scroll to bottom of message box automatically as it types
+                const mainContent = document.getElementById('main-content');
+                mainContent.scrollTop = mainContent.scrollHeight;
+
+                // Adjust speed - slightly random for human feel
+                let typeSpeed = Math.random() * 40 + 40; 
+                if (msg.charAt(charIndex - 1) === '\n') typeSpeed = 400; // Pause at paragraphs
+                
+                setTimeout(type, typeSpeed);
+            } else {
+                // Hide cursor when done
+                document.getElementById('cursor').style.display = 'none';
+            }
+        }
+
+        function createPetal() {
+            const p = document.createElement('div');
+            p.className = 'petal';
+            
+            // Added glowing stars and different hearts for richer visual
+            const types = ['🌹', '❤️', '✨', '💖', '🌸'];
+            p.innerText = types[Math.floor(Math.random() * types.length)];
+            
+            // Random horizontal starting position
+            p.style.left = Math.random() * 100 + 'vw';
+            
+            // Random size
+            p.style.fontSize = Math.random() * 15 + 15 + 'px';
+            
+            // Random fall duration
+            p.style.animationDuration = Math.random() * 4 + 4 + 's';
+            
+            // Calculate horizontal drift (-150px to +150px)
+            const drift = (Math.random() * 300 - 150) + 'px';
+            p.style.setProperty('--drift', drift);
+            
+            document.body.appendChild(p);
+            
+            // Clean up DOM to prevent lag
+            setTimeout(() => p.remove(), 8000);
         }
     </script>
 </body>
 </html>
-
